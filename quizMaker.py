@@ -9,28 +9,32 @@ class Quiz:
     def __init__(self, topic):
         # The topic of the quiz
         self.topic = topic
-        # Text
-        self.text = self.gather_article()
         # Dictionary which stores all questions and respective answers
         self.questions = self.produce_questions()
 
 
     def produce_questions(self):
-        sentences = self.key_phrases()
-        questions = {}
+        try:
+            # Gathering the article
+            self.text = self.gather_article()
 
-        for i in range(len(sentences)):
-            keyword = self.key_word(sentences[i]).strip(".").strip(")").strip(" ")
-            complete_sentence = sentences[i]
-            question = sentences[i].replace(keyword, "BLANK")
+            sentences = self.key_phrases()
+            questions = {}
 
-            questions[i] = {
-                'completeSentence': complete_sentence,
-                'question' : question,
-                'answer' : keyword
-            }
+            for i in range(len(sentences)):
+                keyword = self.key_word(sentences[i]).strip(".").strip(")").strip(" ")
+                complete_sentence = sentences[i]
+                question = sentences[i].replace(keyword, "BLANK")
 
-        return questions
+                questions[i] = {
+                    'completeSentence': complete_sentence,
+                    'question' : question,
+                    'answer' : keyword
+                }
+
+            return questions
+        except:
+            return None
 
     def key_phrases(self):
         # example text
@@ -69,13 +73,22 @@ class Quiz:
 
 """
 Example:
-quiz = Quiz('Linked Lists')
+quiz = Quiz('Hash Function')
 
 final_quiz = quiz.produce_questions()
 
-for i in final_quiz.values():
-    print("Fill in the blank: ")
-    print(i['question'])
-    print("Answer: ")
-    print(i['answer'])
+if final_quiz != None:
+    for i in final_quiz.values():
+        print("Fill in the blank: ")
+        print(i['question'])
+        print("Answer: ")
+        print(i['answer'])
+else:
+    print("Unfortunately I was unable to create a quiz from this topic.")
+    
+Example of question:
+Question: 
+The BLANK by a hash function are called hash values, hash codes, digests, or simply hashes.  
+Answer:
+values returned
 """
