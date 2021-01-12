@@ -24,7 +24,7 @@ class Quiz:
             for i in range(len(sentences)):
                 keyword = self.key_word(sentences[i]).strip(".").strip(")").strip(" ")
                 complete_sentence = sentences[i]
-                question = sentences[i].replace(keyword, "BLANK")
+                question = sentences[i].lower().replace(keyword, "BLANK")
 
                 questions[i] = {
                     'completeSentence': complete_sentence,

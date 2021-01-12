@@ -6,10 +6,11 @@ import speedtest
 import re
 import webbrowser
 import wikipedia
-from mathOperations import math_speech
 import json
+# installing PyAudio is also necessary with 'pip install pyaudio'
 
-# installing PyAudio is also necessary
+from mathOperations import math_speech
+from quizMaker import Quiz
 
 class AI:
     def __init__(self):
@@ -219,13 +220,21 @@ class AI:
                             except:
                                 print("Please specify who you want to know about.")
                                 self.speak("Please specify who you want to know about.")
+                        elif "quiz me on" in instruction:
+                            try:
+                                quiz_topic = re.search("quiz me on (.*)", instruction)[1]
+                                print(f"Now quizzing you on {quiz_topic}")
+                                self.speak(f"Now quizzing you on {quiz_topic}")
+                                self.quiz(quiz_topic)
+                            except:
+                                print("Please provide the topic of the quiz.")
+                                self.speak("Please provide the topic of the quiz.")
                         else:
                             print("I'm sorry, I don't understand. Maybe reference my commands reference for help or speak more clearly.")
                             self.speak("I'm sorry, I don't understand. Maybe reference my commands reference for help or speak more clearly.")
 
-                    elif type == 'joke':
+                    elif type == 'joke' or type == 'quiz':
                         return instruction
-
 
                 except Exception as error:
                     print(error)
@@ -259,7 +268,7 @@ class AI:
 
     def tell_joke(self):
         jokes = self.data["jokes"]
-        joke = jokes[str(random.randint(0, 9))]
+        joke = jokes[str(random.randint(0, len(self.data["jokes"]) - 1))]
 
         if type(joke) is dict:
             joke_question = joke['question']
@@ -323,12 +332,69 @@ class AI:
             print("Unfortunately I wasn't able to retrieve this information.")
             self.speak("Unfortunately I wasn't able to retrieve this information.")
 
+    def quiz(self, quiz_topic):
+        try:
+            print("Preparing the quiz.")
+            self.speak("Preparing the quiz.")
+            # Creating an instance of the class Quiz
+            quiz_maker = Quiz(quiz_topic)
+
+            # Storing the quiz (in Dict format) in the variable quiz_questions
+            quiz_questions = quiz_maker.produce_questions()
+
+            # If quizMaker was unable to produce a quiz
+            if quiz_questions == None: raise ValueError
+
+            # Player score
+            player_score = 0
+
+            print(f"Fill in the blank for the following {len(quiz_questions)} questions. If you wish to leave the quiz, just say 'leave quiz'")
+            self.speak(f"Fill in the blank for the following {len(quiz_questions)} questions. If you wish to leave the quiz, just say 'leave quiz'")
+
+            # looping over all questions and asking the player for the answer
+            for q in quiz_questions.values():
+                print(q["question"])
+                self.speak(q["question"])
+                print("Listening...")
 
 
-#Example:
+                # asking the user for the correct fill in the blank word
+                user_answer = ai.take_query('quiz')
+
+                # checking to see if the player wishes to leave the quiz
+                if user_answer == 'leave quiz':
+                    return None
+
+                if user_answer.lower() == q["answer"].lower():
+                    player_score += 1
+                    quiz_praise = self.data["quiz_praise"][str(random.randint(0, len(self.data["quiz_praise"]) - 1))]
+                    print(quiz_praise)
+                    self.speak(quiz_praise)
+                else:
+                    quiz_mistake = self.data["quiz_mistake"][str(random.randint(0, len(self.data["quiz_mistake"]) - 1))]
+                    print(f"{quiz_mistake}. The answer was {q['answer']}")
+                    self.speak(f"{quiz_mistake}. The answer was {q['answer']}")
+            
+            if player_score / len(quiz_questions) > 0.5:
+                print(f"Great job! Your score was {player_score} out of {len(quiz_questions)}")
+                self.speak(f"Great job! Your score was {player_score} out of {len(quiz_questions)}")
+            elif player_score / len(quiz_questions) == 0.5:
+                print(f"Good, but you can do better. Your score was {player_score} out of {len(quiz_questions)}")
+                self.speak(f"Good, but you can do better. Your score was {player_score} out of {len(quiz_questions)}")
+            else:
+                print(f"Not perfect, keep working on it. Your score was {player_score} out of {len(quiz_questions)}")
+                self.speak(f"Not perfect, keep working on it. Your score was {player_score} out of {len(quiz_questions)}")
+
+        except:
+            print(f"Unfortunately I was unable to quiz you on {quiz_topic}")
+            self.speak(f"Unfortunately I was unable to quiz you on {quiz_topic}")
+
+"""
+Example:
 
 ai = AI()
 
 while True:
     print("Listening...")
     ai.take_query('normal')
+"""

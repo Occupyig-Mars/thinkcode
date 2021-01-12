@@ -64,6 +64,20 @@
             },
         "9" : "3 Database SQL walked into a NoSQL bar. A little while later, they walked right out because they couldn't find a table."
     },
+    "quiz_praise": {
+        "0": "Good job!",
+        "1": "Great!",
+        "2": "Spot on!",
+        "3": "Correct!",
+        "4": "Precise!"
+    },
+    "quiz_mistake": {
+        "0": "Not quite.",
+        "1": "Better luck next time.",
+        "2": "I'm sorry, incorrect.",
+        "3": "Incorrect.",
+        "4": "Wrong, but keep working on it."
+    },
     "days": {
         "1" : "first",
         "2" : "second",
