@@ -2,6 +2,7 @@ import wikipedia
 import spacy
 import pytextrank
 from rake_nltk import Rake
+import random
 
 # run in command line to install the following necessary package: python3 -m spacy download en_core_web_sm
 
@@ -55,8 +56,9 @@ class Quiz:
             #print(p.chunks)
 
         sentences = []
-
-        for sentence in doc._.textrank.summary(limit_phrases=1, limit_sentences=5):
+        quiz_length = random.randint(4, 7)
+        
+        for sentence in doc._.textrank.summary(limit_phrases=1, limit_sentences=quiz_length):
             sentences.append(str(sentence).replace("\n", ""))
 
         return sentences

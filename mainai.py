@@ -385,6 +385,14 @@ class AI:
                 print(f"Not perfect, keep working on it. Your score was {player_score} out of {len(quiz_questions)}")
                 self.speak(f"Not perfect, keep working on it. Your score was {player_score} out of {len(quiz_questions)}")
 
+            print("Would you like to learn more about this topic?")
+            self.speak("Would you like to learn more about this topic?")
+
+            learn_more = self.take_query('quiz')
+
+            if 'yes' in learn_more or 'sure' in learn_more or 'of course' in learn_more or 'yeah' in learn_more:
+                webbrowser.open_new_tab(wikipedia.page(quiz_topic).url)
+
         except:
             print(f"Unfortunately I was unable to quiz you on {quiz_topic}")
             self.speak(f"Unfortunately I was unable to quiz you on {quiz_topic}")
